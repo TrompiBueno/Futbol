@@ -7,73 +7,159 @@
 <title>Fútbol online</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#101820;color:white;font-family:Arial,sans-serif;text-align:center}
-header{padding:12px;background:#172733}
-h1{margin:5px}
-#status{font-size:14px;color:#bce8ff;overflow-wrap:anywhere;margin-top:8px}
-main{width:min(100%,950px);margin:auto;padding:12px}
-.panel{background:#1b2b37;border-radius:12px;padding:16px;margin-bottom:14px}
-input,select,button{font:inherit;padding:11px;margin:5px;border:0;border-radius:8px}
-button{background:#16a765;color:white;font-weight:bold;cursor:pointer}
+body{
+  margin:0;color:#26342b;font-family:"Trebuchet MS",Arial,sans-serif;
+  text-align:center;background-color:#e8dfc9;
+  background-image:
+    radial-gradient(ellipse at 18% 12%,rgba(255,255,255,.7),transparent 35%),
+    radial-gradient(ellipse at 82% 76%,rgba(139,117,78,.13),transparent 38%),
+    repeating-linear-gradient(7deg,rgba(112,94,66,.035) 0px,rgba(112,94,66,.035) 1px,transparent 2px,transparent 7px),
+    repeating-linear-gradient(97deg,rgba(255,255,255,.17) 0px,transparent 2px,transparent 9px)
+}
+header{
+  padding:15px 12px;background:#f5eddc;
+  border-bottom:4px solid #d0c2a5;
+  box-shadow:0 4px 0 rgba(80,66,43,.08);
+  transform:rotate(-.15deg)
+}
+h1{margin:5px;font-size:clamp(24px,4vw,36px);font-weight:900;letter-spacing:.4px;text-shadow:2px 2px 0 #d9c8a7}
+#status{font-size:14px;color:#477b57;overflow-wrap:anywhere;margin-top:8px;font-weight:bold}
+main{width:min(100%,950px);margin:auto;padding:14px}
+.panel{
+  background:#f7f0df;border:3px solid #4a5547;border-radius:5px;
+  padding:16px;margin-bottom:14px;
+  box-shadow:5px 6px 0 rgba(64,57,41,.15);position:relative
+}
+.panel:before{content:"";position:absolute;inset:5px;border:1px dashed rgba(74,85,71,.22);pointer-events:none}
+input,select,button{
+  font:inherit;padding:11px;margin:5px;border:2px solid #485646;
+  border-radius:5px;background:#fff9e9;color:#29382d;
+  box-shadow:2px 3px 0 rgba(64,57,41,.13)
+}
+button{background:#e5a94b;color:#2c3328;font-weight:900;cursor:pointer;transition:transform .12s,box-shadow .12s}
+button:hover{transform:translate(-1px,-1px) rotate(-.5deg);box-shadow:4px 5px 0 rgba(64,57,41,.16)}
+button:active{transform:translate(1px,2px);box-shadow:none}
+button:disabled{opacity:.6;cursor:wait}
 input,select{max-width:100%}
+hr{border:0;border-top:2px dashed #c8b99a;margin:18px 0}
 .hidden{display:none!important}
 #game{display:none}
-#fieldWrap{width:100%;overflow:hidden;border:3px solid white;border-radius:5px;line-height:0;touch-action:none}
+#fieldWrap{
+  width:100%;overflow:hidden;border:4px solid #344b38;
+  border-radius:4px;line-height:0;touch-action:none;
+  box-shadow:5px 6px 0 rgba(64,57,41,.2);
+  background:#91b96c;transform:rotate(-.15deg)
+}
 canvas{display:block;width:100%;height:auto;touch-action:none;cursor:crosshair}
-#scoreboard{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:bold}
-#score{font-size:28px;white-space:nowrap}
-#code{font-size:30px;letter-spacing:5px;color:#ffe082;font-weight:bold}
-#message{font-size:22px;color:#ffe082;font-weight:bold;margin:12px}
-.hint{font-size:14px;color:#d5e1e9;line-height:1.5}
-@media(max-width:500px){main{padding:6px}.panel{padding:10px}#score{font-size:21px}}
+#scoreboard{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:900;color:#3b4d37}
+#score{font-size:28px;white-space:nowrap;background:#f0dfb8;border:2px solid #495642;border-radius:5px;padding:5px 12px;box-shadow:2px 3px 0 rgba(64,57,41,.12)}
+#code{font-size:30px;letter-spacing:5px;color:#ad642d;font-weight:900}
+#message{font-size:22px;color:#ad642d;font-weight:900;margin:12px}
+.hint{font-size:14px;color:#53614d;line-height:1.5}
+h2{color:#394d38}
+@media(max-width:500px){
+  main{padding:7px}.panel{padding:10px}
+  #score{font-size:21px;padding:4px 7px}
+}
+
+/* PANTALLA COMPLETA: márgenes reales y campo completo */
+#fieldWrap:fullscreen,
+#fieldWrap:-webkit-full-screen{
+  position:fixed;
+  inset:0;
+  width:100vw;
+  height:100vh;
+  height:100dvh;
+  max-width:none;
+  max-height:none;
+  margin:0;
+  padding:24px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  background-color:#e8dfc9;
+  background-image:
+    radial-gradient(ellipse at 18% 12%,rgba(255,255,255,.7),transparent 35%),
+    radial-gradient(ellipse at 82% 76%,rgba(139,117,78,.13),transparent 38%),
+    repeating-linear-gradient(7deg,rgba(112,94,66,.035) 0px,rgba(112,94,66,.035) 1px,transparent 2px,transparent 7px);
+  border:none;
+  border-radius:0;
+  box-shadow:none;
+  transform:none;
+  line-height:normal;
+}
+
+/* El medio campo mide 600x500: proporción 1.2:1.
+   Calculamos el ancho usando tanto el ancho como la altura
+   disponibles, descontando los márgenes. */
+#fieldWrap:fullscreen canvas,
+#fieldWrap:-webkit-full-screen canvas{
+  display:block;
+  width:min(
+    calc(100vw - 48px),
+    calc((100vh - 48px) * 1.2),
+    calc((100dvh - 48px) * 1.2)
+  );
+  height:auto;
+  aspect-ratio:6 / 5;
+  max-width:100%;
+  max-height:calc(100dvh - 48px);
+  flex:0 1 auto;
+  object-fit:contain;
+  margin:auto;
+  border-radius:2px;
+  touch-action:none;
+}
 </style>
 </head>
 <body>
 <header>
-<h1>⚽ Fútbol online</h1>
-<div id="status">Conectando con Firebase…</div>
+  <h1>⚽ Fútbol online</h1>
+  <div id="status">Conectando con Firebase…</div>
 </header>
 <main>
-<section id="lobby" class="panel">
-<h2>Crear partida</h2>
-<label>Goles para ganar:</label>
-<select id="target">
-<option>3</option><option selected>5</option><option>7</option><option>10</option><option>15</option>
-</select>
-<br>
-<label>Tu mitad:</label>
-<select id="side"><option value="left">Izquierda</option><option value="right">Derecha</option></select>
-<br><button id="create">Crear partida</button>
-<hr>
-<h2>Unirse a una partida</h2>
-<input id="codeInput" maxlength="5" placeholder="CÓDIGO" style="text-transform:uppercase;width:160px">
-<br><button id="join">Unirse</button>
-<p class="hint">Dos jugadores juegan. Las personas adicionales pueden mirar la partida.</p>
-</section>
+  <section id="lobby" class="panel">
+    <h2>Crear partida</h2>
+    <label>Goles para ganar:</label>
+    <select id="target">
+      <option>3</option><option selected>5</option><option>7</option><option>10</option><option>15</option>
+    </select><br>
+    <label>Tu mitad:</label>
+    <select id="side">
+      <option value="left">Izquierda</option><option value="right">Derecha</option>
+    </select><br>
+    <button id="create">Crear partida</button>
+    <hr>
+    <h2>Unirse a una partida</h2>
+    <input id="codeInput" maxlength="5" placeholder="CÓDIGO" style="text-transform:uppercase;width:160px"><br>
+    <button id="join">Unirse</button>
+    <p class="hint">Dos jugadores juegan. Las personas adicionales pueden mirar la partida.</p>
+  </section>
 
-<section id="waiting" class="panel hidden">
-<h2>Esperando al segundo jugador…</h2>
-<p>Comparte este código:</p>
-<div id="code"></div>
-<p class="hint">Cuando entre el segundo jugador, la partida empezará automáticamente.</p>
-<button id="exitWaiting">Salir</button>
-</section>
+  <section id="waiting" class="panel hidden">
+    <h2>Esperando al segundo jugador…</h2>
+    <p>Comparte este código:</p>
+    <div id="code"></div>
+    <p class="hint">Cuando entre el segundo jugador, la partida empezará automáticamente.</p>
+    <button id="exitWaiting">Salir</button>
+  </section>
 
-<section id="game">
-<div class="panel">
-<div id="scoreboard">
-<div>IZQUIERDA<br><span id="leftScore">0</span></div>
-<div id="score">0 - 0</div>
-<div>DERECHA<br><span id="rightScore">0</span></div>
-</div>
-<p id="mySide"></p>
-<div id="fieldWrap"><canvas id="field" width="600" height="500"></canvas></div>
-<div id="message"></div>
-<p id="hint" class="hint">Acerca el ratón al balón para golpearlo. También puedes hacer clic en el balón y arrastrar hacia atrás para lanzarlo.</p>
-<button id="fullscreen">Pantalla completa</button>
-<button id="exitGame">Salir</button>
-</div>
-</section>
+  <section id="game">
+    <div class="panel">
+      <div id="scoreboard">
+        <div>IZQUIERDA<br><span id="leftScore">0</span></div>
+        <div id="score">0 - 0</div>
+        <div>DERECHA<br><span id="rightScore">0</span></div>
+      </div>
+      <p id="mySide"></p>
+      <div id="fieldWrap"><canvas id="field" width="600" height="500"></canvas></div>
+      <div id="message"></div>
+      <p id="hint" class="hint">Acerca el ratón al balón para golpearlo. También puedes hacer clic en el balón y arrastrar hacia atrás para lanzarlo.</p>
+      <button id="fullscreen">Pantalla completa</button>
+      <button id="exitGame">Salir</button>
+    </div>
+  </section>
 </main>
 
 <script type="module">
@@ -81,14 +167,14 @@ import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-ap
 import{getDatabase,ref,get,set,update,onValue,runTransaction,remove}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig={
-apiKey:"AIzaSyAqbqIW6jNInuJ61OKJHrVCFgxJdqJUZUg",
-authDomain:"futbol-cc5da.firebaseapp.com",
-databaseURL:"https://futbol-cc5da-default-rtdb.europe-west1.firebasedatabase.app",
-projectId:"futbol-cc5da",
-storageBucket:"futbol-cc5da.firebasestorage.app",
-messagingSenderId:"471634030174",
-appId:"1:471634030174:web:bef2c5e8b5e75110cb8ecf",
-measurementId:"G-DD8XF93ZMK"
+  apiKey:"AIzaSyAqbqIW6jNInuJ61OKJHrVCFgxJdqJUZUg",
+  authDomain:"futbol-cc5da.firebaseapp.com",
+  databaseURL:"https://futbol-cc5da-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:"futbol-cc5da",
+  storageBucket:"futbol-cc5da.firebasestorage.app",
+  messagingSenderId:"471634030174",
+  appId:"1:471634030174:web:bef2c5e8b5e75110cb8ecf",
+  measurementId:"G-DD8XF93ZMK"
 };
 
 const db=getDatabase(initializeApp(firebaseConfig));
@@ -97,8 +183,10 @@ const $=id=>document.getElementById(id);
 const canvas=$("field"),ctx=canvas.getContext("2d");
 
 let uid=sessionStorage.getItem("footballUid");
-if(!uid){uid="u_"+Math.random().toString(36).slice(2)+Date.now().toString(36);sessionStorage.setItem("footballUid",uid)}
-
+if(!uid){
+  uid="u_"+Math.random().toString(36).slice(2)+Date.now().toString(36);
+  sessionStorage.setItem("footballUid",uid);
+}
 let code=null,room=null,side=null,isHost=false,spectator=false,state=null;
 let unsubRoom=null,unsubState=null,unsubHits=null,timer=null;
 let lastHits={},dragStart=null,dragging=false,lastHover=0,hitNum=0;
@@ -110,221 +198,342 @@ const hitRef=()=>ref(db,ROOT+"/"+code+"/hits/"+uid);
 const other=s=>s==="left"?"right":"left";
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
-function status(t,error=false){$("status").textContent=t;$("status").style.color=error?"#ff9c9c":"#bce8ff"}
-function makeCode(){let s="";for(let i=0;i<5;i++)s+="ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random()*26)];return s}
-function freshState(){return{ball:{x:W/2,y:H/2,vx:0,vy:0},score:{left:0,right:0},winner:null,tick:0}}
+function status(t,error=false){
+  $("status").textContent=t;
+  $("status").style.color=error?"#b94141":"#477b57";
+}
+function makeCode(){
+  let s="";
+  for(let i=0;i<5;i++)s+="ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random()*26)];
+  return s;
+}
+function freshState(){
+  return{ball:{x:W/2,y:H/2,vx:0,vy:0},score:{left:0,right:0},winner:null,tick:0};
+}
 function show(which){
-$("lobby").classList.toggle("hidden",which!=="lobby");
-$("waiting").classList.toggle("hidden",which!=="waiting");
-$("game").style.display=which==="game"?"block":"none";
+  $("lobby").classList.toggle("hidden",which!=="lobby");
+  $("waiting").classList.toggle("hidden",which!=="waiting");
+  $("game").style.display=which==="game"?"block":"none";
 }
 function cleanup(){
-if(timer)clearInterval(timer);timer=null;
-if(unsubRoom)unsubRoom();if(unsubState)unsubState();if(unsubHits)unsubHits();
-unsubRoom=unsubState=unsubHits=null;
+  if(timer)clearInterval(timer);
+  timer=null;
+  if(unsubRoom)unsubRoom();
+  if(unsubState)unsubState();
+  if(unsubHits)unsubHits();
+  unsubRoom=unsubState=unsubHits=null;
 }
 function updateScreen(){
-if(!room)return;
-const ready=!!room.players?.left&&!!room.players?.right;
-if(!ready){show("waiting");$("code").textContent=code;status("Esperando al segundo jugador…");return}
-show("game");
-$("mySide").textContent=spectator?"Estás mirando la partida":`Tu mitad: ${side==="left"?"izquierda":"derecha"}`;
-$("hint").textContent=spectator?"Estás mirando como espectador. Los dos jugadores controlan el balón.":"Acerca el ratón al balón para golpearlo. O haz clic en él y arrastra hacia atrás. Funciona también con pantalla táctil.";
-if(room.status!=="started"&&room.status!=="finished"&&isHost){
-update(roomRef(),{status:"started"}).catch(e=>status("Error al iniciar: "+e.message,true));
-}
-if(state)draw();
+  if(!room)return;
+  const ready=!!room.players?.left&&!!room.players?.right;
+  if(!ready){
+    show("waiting");
+    $("code").textContent=code;
+    status("Esperando al segundo jugador…");
+    return;
+  }
+  show("game");
+  $("mySide").textContent=spectator?"Estás mirando la partida":`Tu mitad: ${side==="left"?"izquierda":"derecha"}`;
+  $("hint").textContent=spectator
+    ?"Estás mirando como espectador. Los dos jugadores controlan el balón."
+    :"Acerca el ratón al balón para golpearlo. O haz clic en él y arrastra hacia atrás. Funciona también con pantalla táctil.";
+  if(room.status!=="started"&&room.status!=="finished"&&isHost){
+    update(roomRef(),{status:"started"}).catch(e=>status("Error al iniciar: "+e.message,true));
+  }
+  if(state)draw();
 }
 async function createGame(){
-if(working)return;working=true;$("create").disabled=true;
-try{
-let chosen=null;
-for(let i=0;i<15;i++){let c=makeCode();if(!(await get(ref(db,ROOT+"/"+c))).exists()){chosen=c;break}}
-if(!chosen)throw Error("No se pudo crear un código.");
-code=chosen;side=$("side").value;isHost=true;spectator=false;
-room={version:VERSION,code,hostUid:uid,hostSide:side,target:Number($("target").value),status:"waiting",
-players:{left:side==="left"?uid:null,right:side==="right"?uid:null},
-spectators:{},hits:{},state:freshState()};
-await set(roomRef(),room);
-listenRoom();status("Partida creada.");
-}catch(e){console.error(e);status("Error creando partida: "+e.message,true)}
-finally{working=false;$("create").disabled=false}
+  if(working)return;
+  working=true;$("create").disabled=true;
+  try{
+    let chosen=null;
+    for(let i=0;i<15;i++){
+      let c=makeCode();
+      if(!(await get(ref(db,ROOT+"/"+c))).exists()){chosen=c;break}
+    }
+    if(!chosen)throw Error("No se pudo crear un código.");
+    code=chosen;side=$("side").value;isHost=true;spectator=false;
+    room={
+      version:VERSION,code,hostUid:uid,hostSide:side,
+      target:Number($("target").value),status:"waiting",
+      players:{left:side==="left"?uid:null,right:side==="right"?uid:null},
+      spectators:{},hits:{},state:freshState()
+    };
+    await set(roomRef(),room);
+    listenRoom();status("Partida creada.");
+  }catch(e){
+    console.error(e);status("Error creando partida: "+e.message,true);
+  }finally{
+    working=false;$("create").disabled=false;
+  }
 }
 async function joinGame(){
-if(working)return;working=true;$("join").disabled=true;
-try{
-code=$("codeInput").value.trim().toUpperCase();
-if(!/^[A-Z]{5}$/.test(code))throw Error("Escribe un código de cinco letras.");
-let snap=await get(roomRef());
-if(!snap.exists())throw Error("No existe esa sala.");
-room=snap.val();
-if(room.version!==VERSION)throw Error("Sala antigua. Crea una sala nueva con este HTML.");
-if(room.hostUid===uid){isHost=true;side=room.hostSide;spectator=false;listenRoom();return}
-isHost=false;
-const wanted=other(room.hostSide);
-const slot=ref(db,ROOT+"/"+code+"/players/"+wanted);
-const claim=await runTransaction(slot,current=>{
-if(current===null||current===undefined||current==="")return uid;
-return;
-},{applyLocally:false});
-if(claim.committed&&claim.snapshot.val()===uid){
-side=wanted;spectator=false;
-}else{
-spectator=true;side=null;
-await set(ref(db,ROOT+"/"+code+"/spectators/"+uid),{joinedAt:Date.now()});
-}
-listenRoom();
-}catch(e){console.error(e);status("No se pudo unir: "+e.message,true)}
-finally{working=false;$("join").disabled=false}
+  if(working)return;
+  working=true;$("join").disabled=true;
+  try{
+    code=$("codeInput").value.trim().toUpperCase();
+    if(!/^[A-Z]{5}$/.test(code))throw Error("Escribe un código de cinco letras.");
+    let snap=await get(roomRef());
+    if(!snap.exists())throw Error("No existe esa sala.");
+    room=snap.val();
+    if(room.version!==VERSION)throw Error("Sala antigua. Crea una sala nueva con este HTML.");
+    if(room.hostUid===uid){
+      isHost=true;side=room.hostSide;spectator=false;listenRoom();return;
+    }
+    isHost=false;
+    const wanted=other(room.hostSide);
+    const slot=ref(db,ROOT+"/"+code+"/players/"+wanted);
+    const claim=await runTransaction(slot,current=>{
+      if(current===null||current===undefined||current==="")return uid;
+      return;
+    },{applyLocally:false});
+    if(claim.committed&&claim.snapshot.val()===uid){
+      side=wanted;spectator=false;
+    }else{
+      spectator=true;side=null;
+      await set(ref(db,ROOT+"/"+code+"/spectators/"+uid),{joinedAt:Date.now()});
+    }
+    listenRoom();
+  }catch(e){
+    console.error(e);status("No se pudo unir: "+e.message,true);
+  }finally{
+    working=false;$("join").disabled=false;
+  }
 }
 function listenRoom(){
-cleanup();
-unsubRoom=onValue(roomRef(),snap=>{
-if(!snap.exists()){status("La sala ya no existe.",true);cleanup();return}
-room=snap.val();
-if(room.version!==VERSION){status("La sala no es compatible.",true);return}
-if(!side&&!spectator){
-if(room.players?.left===uid)side="left";
-else if(room.players?.right===uid)side="right";
-else if(room.hostUid===uid){side=room.hostSide;isHost=true}
-}
-updateScreen();
-},e=>status("Error de sala: "+e.message,true));
+  cleanup();
+  unsubRoom=onValue(roomRef(),snap=>{
+    if(!snap.exists()){
+      status("La sala ya no existe.",true);cleanup();return;
+    }
+    room=snap.val();
+    if(room.version!==VERSION){status("La sala no es compatible.",true);return}
+    if(!side&&!spectator){
+      if(room.players?.left===uid)side="left";
+      else if(room.players?.right===uid)side="right";
+      else if(room.hostUid===uid){side=room.hostSide;isHost=true}
+    }
+    updateScreen();
+  },e=>status("Error de sala: "+e.message,true));
 
-unsubState=onValue(stateRef(),snap=>{
-if(!snap.exists())return;
-state=snap.val();updateScore();draw();
-},e=>status("Error del estado: "+e.message,true));
+  unsubState=onValue(stateRef(),snap=>{
+    if(!snap.exists())return;
+    state=snap.val();updateScore();draw();
+  },e=>status("Error del estado: "+e.message,true));
 
-unsubHits=onValue(ref(db,ROOT+"/"+code+"/hits"),snap=>{
-if(!isHost||!state)return;
-const all=snap.val()||{};
-for(const [player,h] of Object.entries(all)){
-if(!h?.id||lastHits[player]===h.id)continue;
-lastHits[player]=h.id;
-if(state.winner)continue;
-state.ball.vx=clamp(state.ball.vx+clamp(Number(h.vx)||0,-13,13),-17,17);
-state.ball.vy=clamp(state.ball.vy+clamp(Number(h.vy)||0,-13,13),-17,17);
-}
-},e=>status("Error recibiendo golpes: "+e.message,true));
-
-if(isHost)startPhysics();
+  unsubHits=onValue(ref(db,ROOT+"/"+code+"/hits"),snap=>{
+    if(!isHost||!state)return;
+    const all=snap.val()||{};
+    for(const [player,h] of Object.entries(all)){
+      if(!h?.id||lastHits[player]===h.id)continue;
+      lastHits[player]=h.id;
+      if(state.winner)continue;
+      state.ball.vx=clamp(state.ball.vx+clamp(Number(h.vx)||0,-13,13),-17,17);
+      state.ball.vy=clamp(state.ball.vy+clamp(Number(h.vy)||0,-13,13),-17,17);
+    }
+  },e=>status("Error recibiendo golpes: "+e.message,true));
+  if(isHost)startPhysics();
 }
 function updateScore(){
-if(!state)return;
-const l=Number(state.score?.left)||0,r=Number(state.score?.right)||0;
-$("leftScore").textContent=l;$("rightScore").textContent=r;$("score").textContent=l+" - "+r;
-if(state.winner)$("message").textContent=state.winner===side?"¡HAS GANADO! 🏆":spectator?"Partida terminada": "¡HA GANADO EL OTRO JUGADOR!";
-else $("message").textContent="";
+  if(!state)return;
+  const l=Number(state.score?.left)||0,r=Number(state.score?.right)||0;
+  $("leftScore").textContent=l;$("rightScore").textContent=r;
+  $("score").textContent=l+" - "+r;
+  if(state.winner){
+    $("message").textContent=state.winner===side?"¡HAS GANADO! 🏆":spectator?"Partida terminada":"¡HA GANADO EL OTRO JUGADOR!";
+  }else $("message").textContent="";
 }
 function resetBall(){state.ball={x:W/2,y:H/2,vx:0,vy:0}}
 function startPhysics(){
-if(timer)clearInterval(timer);
-let last=performance.now();
-timer=setInterval(async()=>{
-if(!isHost||!state||!room?.players?.left||!room?.players?.right||state.winner)return;
-const now=performance.now(),dt=Math.min((now-last)/16.67,2);last=now;
-const b=state.ball;b.x+=b.vx*dt;b.y+=b.vy*dt;
-b.vx*=Math.pow(.991,dt);b.vy*=Math.pow(.991,dt);
-if(b.y<R){b.y=R;b.vy=Math.abs(b.vy)*.88}
-if(b.y>H-R){b.y=H-R;b.vy=-Math.abs(b.vy)*.88}
-if(b.x<-R){state.score.right++;resetBall()}
-if(b.x>W+R){state.score.left++;resetBall()}
-const target=Number(room.target)||5;
-if(state.score.left>=target)state.winner="left";
-if(state.score.right>=target)state.winner="right";
-state.tick=(state.tick||0)+1;
-try{await set(stateRef(),state)}catch(e){status("Error actualizando partida: "+e.message,true)}
-},33);
+  if(timer)clearInterval(timer);
+  let last=performance.now();
+  timer=setInterval(async()=>{
+    if(!isHost||!state||!room?.players?.left||!room?.players?.right||state.winner)return;
+    const now=performance.now(),dt=Math.min((now-last)/16.67,2);
+    last=now;
+    const b=state.ball;
+    b.x+=b.vx*dt;b.y+=b.vy*dt;
+    b.vx*=Math.pow(.991,dt);b.vy*=Math.pow(.991,dt);
+    if(b.y<R){b.y=R;b.vy=Math.abs(b.vy)*.88}
+    if(b.y>H-R){b.y=H-R;b.vy=-Math.abs(b.vy)*.88}
+    if(b.x<-R){state.score.right++;resetBall()}
+    if(b.x>W+R){state.score.left++;resetBall()}
+    const target=Number(room.target)||5;
+    if(state.score.left>=target)state.winner="left";
+    if(state.score.right>=target)state.winner="right";
+    state.tick=(state.tick||0)+1;
+    try{await set(stateRef(),state)}
+    catch(e){status("Error actualizando partida: "+e.message,true)}
+  },33);
 }
+
 function draw(){
-if(!state||!side&&!spectator)return;
-const offset=side==="right"?VW:0;
-ctx.clearRect(0,0,VW,H);
-ctx.save();ctx.beginPath();ctx.rect(0,0,VW,H);ctx.clip();
-ctx.translate(-offset,0);
-ctx.fillStyle="#218c45";ctx.fillRect(0,0,W,H);
-for(let x=0;x<W;x+=80){ctx.fillStyle=(x/80)%2?"rgba(0,0,0,.025)":"rgba(255,255,255,.025)";ctx.fillRect(x,0,80,H)}
-ctx.strokeStyle="white";ctx.lineWidth=4;ctx.strokeRect(2,2,W-4,H-4);
-ctx.beginPath();ctx.moveTo(W/2,0);ctx.lineTo(W/2,H);ctx.stroke();
-ctx.beginPath();ctx.arc(W/2,H/2,80,0,Math.PI*2);ctx.stroke();
-ctx.strokeRect(0,145,125,210);ctx.strokeRect(W-125,145,125,210);
-ctx.fillStyle="#eee";ctx.fillRect(-8,180,12,140);ctx.fillRect(W-4,180,12,140);
-const b=state.ball;
-ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(b.x,b.y,R,0,Math.PI*2);ctx.fill();
-ctx.strokeStyle="#222";ctx.lineWidth=2;ctx.stroke();
-ctx.fillStyle="#222";ctx.beginPath();ctx.arc(b.x,b.y,4,0,Math.PI*2);ctx.fill();
-ctx.restore();
-ctx.fillStyle="white";ctx.font="bold 14px Arial";
-ctx.fillText(spectator?"ESPECTADOR":side==="left"?"TU MITAD":"TU MITAD",12,22);
+  if(!state||!side&&!spectator)return;
+  const offset=side==="right"?VW:0;
+  ctx.clearRect(0,0,VW,H);
+  ctx.save();
+  ctx.beginPath();ctx.rect(0,0,VW,H);ctx.clip();ctx.translate(-offset,0);
+
+  ctx.fillStyle="#8fbd70";ctx.fillRect(0,0,W,H);
+  for(let x=0;x<W;x+=80){
+    ctx.fillStyle=(x/80)%2?"rgba(45,91,48,.075)":"rgba(255,246,194,.10)";
+    ctx.fillRect(x,0,80,H);
+  }
+  for(let i=0;i<115;i++){
+    const x=(i*137+31)%W,y=(i*83+17)%H;
+    ctx.strokeStyle=i%2?"rgba(40,83,46,.15)":"rgba(255,250,213,.22)";
+    ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(x,y);
+    ctx.lineTo(x+5+(i%7),y+(i%3)-1);ctx.stroke();
+  }
+
+  ctx.lineCap="round";ctx.lineJoin="round";
+  ctx.strokeStyle="#f8f0d9";ctx.lineWidth=5;
+  ctx.beginPath();
+  ctx.moveTo(5,7);ctx.lineTo(W-6,5);ctx.lineTo(W-4,H-7);
+  ctx.lineTo(6,H-5);ctx.closePath();ctx.stroke();
+
+  ctx.strokeStyle="rgba(47,83,47,.38)";ctx.lineWidth=1.5;
+  ctx.beginPath();
+  ctx.moveTo(9,12);ctx.lineTo(W-10,10);ctx.lineTo(W-9,H-12);
+  ctx.lineTo(10,H-10);ctx.closePath();ctx.stroke();
+
+  ctx.strokeStyle="#f8f0d9";ctx.lineWidth=4;
+  ctx.beginPath();ctx.moveTo(W/2,8);ctx.lineTo(W/2-1,H-8);ctx.stroke();
+  ctx.beginPath();ctx.ellipse(W/2,H/2,81,79,-.03,0,Math.PI*2);ctx.stroke();
+  ctx.beginPath();ctx.ellipse(W/2,H/2,7,6,0,0,Math.PI*2);
+  ctx.fillStyle="#f8f0d9";ctx.fill();
+
+  ctx.strokeRect(0,145,125,210);ctx.strokeRect(W-125,145,125,210);
+  ctx.strokeRect(0,195,52,110);ctx.strokeRect(W-52,195,52,110);
+  ctx.fillStyle="#f0e5c9";ctx.fillRect(-8,180,12,140);ctx.fillRect(W-4,180,12,140);
+
+  ctx.strokeStyle="#49634a";ctx.lineWidth=2;
+  for(let y=190;y<320;y+=14){
+    ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(9,y+3);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(W-9,y+3);ctx.lineTo(W,y);ctx.stroke();
+  }
+
+  // Balón cartoon con paneles negros
+  const b=state.ball,ballR=15;
+  ctx.fillStyle="rgba(38,54,34,.25)";
+  ctx.beginPath();ctx.ellipse(b.x+2,b.y+4,ballR*1.05,ballR*.78,0,0,Math.PI*2);ctx.fill();
+
+  ctx.beginPath();ctx.arc(b.x,b.y,ballR,0,Math.PI*2);
+  ctx.fillStyle="#fffdf5";ctx.fill();
+  ctx.strokeStyle="#252b26";ctx.lineWidth=1.8;ctx.stroke();
+
+  function drawBallPentagon(cx,cy,radius,rotation){
+    ctx.beginPath();
+    for(let i=0;i<5;i++){
+      const angle=rotation+i*Math.PI*2/5;
+      const px=cx+Math.cos(angle)*radius,py=cy+Math.sin(angle)*radius;
+      if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);
+    }
+    ctx.closePath();ctx.fillStyle="#252b26";ctx.fill();
+    ctx.strokeStyle="#252b26";ctx.lineWidth=.8;ctx.stroke();
+  }
+
+  drawBallPentagon(b.x,b.y,4.3,-Math.PI/2);
+  for(let i=0;i<5;i++){
+    const angle=-Math.PI/2+i*Math.PI*2/5;
+    drawBallPentagon(b.x+Math.cos(angle)*9.1,b.y+Math.sin(angle)*9.1,3.1,angle);
+  }
+
+  ctx.beginPath();ctx.arc(b.x-5,b.y-5,2.2,0,Math.PI*2);
+  ctx.fillStyle="rgba(255,255,255,.9)";ctx.fill();
+  ctx.restore();
+
+  ctx.fillStyle="#fff8e8";ctx.strokeStyle="#354b36";ctx.lineWidth=3;
+  ctx.font="900 14px Trebuchet MS,Arial";
+  const label=spectator?"👀 ESPECTADOR":"⚽ TU MITAD";
+  ctx.strokeText(label,12,23);ctx.fillText(label,12,23);
 }
+
 function toWorld(e){
-const rect=canvas.getBoundingClientRect();
-const x=(e.clientX-rect.left)/rect.width*VW;
-const y=(e.clientY-rect.top)/rect.height*H;
-return{x:x+(side==="right"?VW:0),y};
+  const rect=canvas.getBoundingClientRect();
+  const x=(e.clientX-rect.left)/rect.width*VW;
+  const y=(e.clientY-rect.top)/rect.height*H;
+  return{x:x+(side==="right"?VW:0),y};
 }
 function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y)}
+
 async function hit(vx,vy){
-if(spectator||!side||!state||state.winner)return;
-try{await set(hitRef(),{id:uid+"_"+Date.now()+"_"+(++hitNum),vx:clamp(vx,-13,13),vy:clamp(vy,-13,13)})}
-catch(e){status("Error al golpear: "+e.message,true)}
+  if(spectator||!side||!state||state.winner)return;
+  try{
+    await set(hitRef(),{
+      id:uid+"_"+Date.now()+"_"+(++hitNum),
+      vx:clamp(vx,-13,13),vy:clamp(vy,-13,13)
+    });
+  }catch(e){status("Error al golpear: "+e.message,true)}
 }
+
 canvas.addEventListener("pointerdown",e=>{
-if(spectator||!state||state.winner)return;
-e.preventDefault();canvas.setPointerCapture(e.pointerId);
-const p=toWorld(e);
-if(dist(p,state.ball)<85){dragging=true;dragStart=p}
+  if(spectator||!state||state.winner)return;
+  e.preventDefault();canvas.setPointerCapture(e.pointerId);
+  const p=toWorld(e);
+  if(dist(p,state.ball)<85){dragging=true;dragStart=p}
 });
 canvas.addEventListener("pointermove",e=>{
-if(spectator||!state||state.winner)return;
-const p=toWorld(e);
-if(dragging)return;
-if(e.pointerType==="mouse"&&Date.now()-lastHover>280&&dist(p,state.ball)<R+22){
-lastHover=Date.now();
-let dx=state.ball.x-p.x,dy=state.ball.y-p.y,len=Math.hypot(dx,dy)||1;
-hit(dx/len*4.5,dy/len*4.5);
-}
+  if(spectator||!state||state.winner)return;
+  const p=toWorld(e);
+  if(dragging)return;
+  if(e.pointerType==="mouse"&&Date.now()-lastHover>280&&dist(p,state.ball)<R+22){
+    lastHover=Date.now();
+    let dx=state.ball.x-p.x,dy=state.ball.y-p.y,len=Math.hypot(dx,dy)||1;
+    hit(dx/len*4.5,dy/len*4.5);
+  }
 });
 canvas.addEventListener("pointerup",e=>{
-if(!dragging||!dragStart||!state)return;
-const p=toWorld(e),dx=dragStart.x-p.x,dy=dragStart.y-p.y;
-if(Math.hypot(dx,dy)>6)hit(dx*.14,dy*.14);
-else{
-const b=state.ball;let x=b.x-p.x,y=b.y-p.y,len=Math.hypot(x,y)||1;
-hit(x/len*5,y/len*5);
-}
-dragging=false;dragStart=null;
+  if(!dragging||!dragStart||!state)return;
+  const p=toWorld(e),dx=dragStart.x-p.x,dy=dragStart.y-p.y;
+  if(Math.hypot(dx,dy)>6)hit(dx*.14,dy*.14);
+  else{
+    const b=state.ball;
+    let x=b.x-p.x,y=b.y-p.y,len=Math.hypot(x,y)||1;
+    hit(x/len*5,y/len*5);
+  }
+  dragging=false;dragStart=null;
 });
 canvas.addEventListener("pointercancel",()=>{dragging=false;dragStart=null});
 
 async function leave(){
-cleanup();
-try{
-if(code&&room){
-const snap=await get(roomRef());
-if(snap.exists()){
-const r=snap.val();
-if(r.hostUid===uid)await remove(roomRef());
-else if(side&&r.players?.[side]===uid)await update(roomRef(),{["players/"+side]:null,status:"waiting"});
-else if(spectator)await remove(ref(db,ROOT+"/"+code+"/spectators/"+uid));
+  cleanup();
+  try{
+    if(code&&room){
+      const snap=await get(roomRef());
+      if(snap.exists()){
+        const r=snap.val();
+        if(r.hostUid===uid)await remove(roomRef());
+        else if(side&&r.players?.[side]===uid)
+          await update(roomRef(),{["players/"+side]:null,status:"waiting"});
+        else if(spectator)await remove(ref(db,ROOT+"/"+code+"/spectators/"+uid));
+      }
+    }
+  }catch(e){console.warn(e)}
+  code=null;room=null;side=null;state=null;isHost=false;spectator=false;lastHits={};
+  show("lobby");status("Has salido de la partida.");
 }
-}
-}catch(e){console.warn(e)}
-code=null;room=null;side=null;state=null;isHost=false;spectator=false;lastHits={};
-show("lobby");status("Has salido de la partida.");
-}
+
 $("create").onclick=createGame;
 $("join").onclick=joinGame;
-$("codeInput").addEventListener("input",()=>{$("codeInput").value=$("codeInput").value.toUpperCase().replace(/[^A-Z]/g,"").slice(0,5)});
+$("codeInput").addEventListener("input",()=>{
+  $("codeInput").value=$("codeInput").value.toUpperCase().replace(/[^A-Z]/g,"").slice(0,5);
+});
 $("codeInput").addEventListener("keydown",e=>{if(e.key==="Enter")joinGame()});
 $("exitWaiting").onclick=leave;
 $("exitGame").onclick=leave;
+
 $("fullscreen").onclick=async()=>{
-try{if(!document.fullscreenElement)await $("fieldWrap").requestFullscreen();else await document.exitFullscreen()}
-catch(e){status("No se pudo activar pantalla completa: "+e.message,true)}
+  try{
+    if(!document.fullscreenElement)await $("fieldWrap").requestFullscreen();
+    else await document.exitFullscreen();
+  }catch(e){status("No se pudo activar pantalla completa: "+e.message,true)}
 };
-onValue(ref(db,".info/connected"),s=>{if(s.val())status("Conectado a Firebase.");else status("Conectando con Firebase…")});
+
+onValue(ref(db,".info/connected"),s=>{
+  if(s.val())status("Conectado a Firebase.");
+  else status("Conectando con Firebase…");
+});
 </script>
 </body>
 </html>
