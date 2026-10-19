@@ -1,123 +1,254 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Fútbol online</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Karla:wght@400;700&display=swap" rel="stylesheet">
 <style>
+:root{
+  --ink:#2b2620;--cream:#f6efe0;--cream2:#e9dec6;--kraft:#c2a67c;
+  --terra:#c4573a;--ochre:#d9a441;--sage:#7c9a76;--moss:#4f7a4a;--navy:#2f4156;
+  --shadow:rgba(40,28,15,.34);
+  --noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .22 0 0 0 0 .12 0 0 0 .17 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  /* cortes de tijera */
+  --cutA:polygon(.6% 1.4%,17% 0,40% .9%,63% .2%,84% 1.1%,100% .4%,99.3% 22%,100% 48%,99.1% 74%,100% 99%,78% 100%,52% 99.1%,30% 99.9%,9% 98.9%,0 100%,.7% 74%,0 49%,.9% 25%);
+  --cutB:polygon(1% 3%,26% 0,55% 2%,100% 1%,99% 40%,100% 97%,70% 100%,38% 98.5%,0 100%,1.5% 60%);
+  --cutBtn:polygon(1% 14%,6% 0,48% 5%,95% 0,100% 18%,98.5% 84%,100% 100%,52% 95%,5% 100%,0 84%);
+  --cutLbl:polygon(0 6%,34% 0,100% 8%,97% 100%,60% 94%,2% 100%);
+}
 *{box-sizing:border-box}
+html{min-height:100%}
 body{
-  margin:0;color:#26342b;font-family:"Trebuchet MS",Arial,sans-serif;
-  text-align:center;background-color:#e8dfc9;
-  background-image:
-    radial-gradient(ellipse at 18% 12%,rgba(255,255,255,.7),transparent 35%),
-    radial-gradient(ellipse at 82% 76%,rgba(139,117,78,.13),transparent 38%),
-    repeating-linear-gradient(7deg,rgba(112,94,66,.035) 0px,rgba(112,94,66,.035) 1px,transparent 2px,transparent 7px),
-    repeating-linear-gradient(97deg,rgba(255,255,255,.17) 0px,transparent 2px,transparent 9px)
+  margin:0;min-height:100vh;color:var(--ink);text-align:center;
+  font-family:"Karla","Trebuchet MS",Arial,sans-serif;font-size:18px;
+  background-color:var(--kraft);
+  background-image:var(--noise),radial-gradient(ellipse at 25% 8%,rgba(255,255,255,.28),transparent 50%),radial-gradient(ellipse at 80% 95%,rgba(60,38,15,.25),transparent 55%);
 }
+/* piezas de papel recortadas al fondo */
+#bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;filter:drop-shadow(5px 7px 0 rgba(40,28,15,.25))}
+#bg i{position:absolute;background:var(--c);background-image:var(--noise)}
+#bg i:nth-child(1){--c:var(--terra);left:-70px;top:10%;width:270px;height:250px;transform:rotate(-8deg);clip-path:polygon(8% 0,62% 6%,100% 34%,88% 86%,40% 100%,0 66%,4% 22%)}
+#bg i:nth-child(2){--c:var(--navy);right:-90px;top:-40px;width:340px;height:290px;transform:rotate(12deg);clip-path:polygon(0 12%,48% 0,100% 18%,94% 70%,60% 100%,10% 84%)}
+#bg i:nth-child(3){--c:var(--ochre);right:-40px;bottom:6%;width:240px;height:210px;transform:rotate(-14deg);clip-path:polygon(14% 0,100% 10%,86% 92%,30% 100%,0 48%)}
+#bg i:nth-child(4){--c:var(--sage);left:-80px;bottom:-60px;width:330px;height:260px;transform:rotate(7deg);clip-path:polygon(0 0,100% 14%,92% 100%,10% 88%)}
+#bg i:nth-child(5){--c:var(--cream2);left:46%;bottom:-50px;width:150px;height:120px;transform:rotate(-20deg);clip-path:polygon(8% 0,100% 20%,84% 100%,0 70%)}
+
 header{
-  padding:15px 12px;background:#f5eddc;
-  border-bottom:4px solid #d0c2a5;
-  box-shadow:0 4px 0 rgba(80,66,43,.08);
-  transform:rotate(-.15deg)
+  position:relative;padding:24px 12px 40px;margin-bottom:34px;
+  filter:drop-shadow(0 4px 0 var(--shadow))
 }
-h1{margin:5px;font-size:clamp(24px,4vw,36px);font-weight:900;letter-spacing:.4px;text-shadow:2px 2px 0 #d9c8a7}
-#status{font-size:14px;color:#477b57;overflow-wrap:anywhere;margin-top:8px;font-weight:bold}
-main{width:min(100%,950px);margin:auto;padding:14px}
-.panel{
-  background:#f7f0df;border:3px solid #4a5547;border-radius:5px;
-  padding:16px;margin-bottom:14px;
-  box-shadow:5px 6px 0 rgba(64,57,41,.15);position:relative
+header::before{
+  content:"";position:absolute;inset:0;z-index:-1;background:var(--navy);background-image:var(--noise);
+  clip-path:polygon(0 0,100% 0,100% 80%,94% 90%,88% 82%,79% 93%,70% 85%,61% 95%,52% 86%,43% 92%,33% 83%,24% 94%,14% 85%,6% 92%,0 84%)
 }
-.panel:before{content:"";position:absolute;inset:5px;border:1px dashed rgba(74,85,71,.22);pointer-events:none}
-input,select,button{
-  font:inherit;padding:11px;margin:5px;border:2px solid #485646;
-  border-radius:5px;background:#fff9e9;color:#29382d;
-  box-shadow:2px 3px 0 rgba(64,57,41,.13)
+h1{margin:0 0 12px;font-size:clamp(28px,6vw,54px);font-weight:400;line-height:1}
+#status{
+  display:inline-block;font-size:15px;font-weight:700;color:var(--moss);overflow-wrap:anywhere;
+  padding:5px 16px;background:var(--cream);border-left:6px solid var(--ochre);
+  box-shadow:2px 3px 0 rgba(0,0,0,.35)
 }
-button{background:#e5a94b;color:#2c3328;font-weight:900;cursor:pointer;transition:transform .12s,box-shadow .12s}
-button:hover{transform:translate(-1px,-1px) rotate(-.5deg);box-shadow:4px 5px 0 rgba(64,57,41,.16)}
-button:active{transform:translate(1px,2px);box-shadow:none}
+main{width:min(100%,950px);margin:auto;padding:14px 14px 50px}
+
+/* hojas de papel cortadas con tijera, apiladas */
+.panel{position:relative;padding:36px 28px 30px;margin:0 0 38px;filter:drop-shadow(3px 5px 0 var(--shadow))}
+.panel::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--cream);background-image:var(--noise);clip-path:var(--cutA)}
+.panel::after{content:"";position:absolute;inset:-7px -9px -10px -6px;z-index:-2;background:var(--under,var(--sage));background-image:var(--noise);clip-path:var(--cutB);transform:rotate(-.9deg)}
+#lobby{--under:var(--sage);transform:rotate(.35deg)}
+#waiting{--under:var(--terra);transform:rotate(-.35deg)}
+#game .panel{--under:var(--navy)}
+
+h2{
+  position:relative;z-index:0;display:inline-block;margin:4px 0 16px;padding:7px 22px;
+  font-family:"Archivo Black",Arial,sans-serif;font-weight:400;font-size:20px;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--cream);filter:drop-shadow(2px 2px 0 rgba(0,0,0,.3))
+}
+h2::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--navy);clip-path:var(--cutLbl)}
+#waiting h2::before{background:var(--terra)}
+label{font-size:18px;font-weight:700}
+p{margin:12px 0}
+
+input,select{
+  font:inherit;font-size:18px;padding:10px 16px;margin:7px;color:var(--ink);
+  border:0;border-bottom:3px solid var(--ink);border-radius:0;background:#fffaf0;
+  box-shadow:2px 3px 0 rgba(40,28,15,.25);text-align:center;max-width:100%
+}
+input:focus,select:focus{outline:3px solid var(--ochre);outline-offset:2px}
+input::placeholder{color:rgba(43,38,32,.4)}
+
+button{
+  position:relative;z-index:0;font-family:"Archivo Black",Arial,sans-serif;font-size:14px;letter-spacing:.09em;
+  text-transform:uppercase;padding:14px 28px;margin:9px;border:0;background:none;color:var(--cream);cursor:pointer;
+  filter:drop-shadow(2px 3px 0 rgba(40,28,15,.4));transition:transform .12s,filter .12s
+}
+button::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--b,var(--terra));clip-path:var(--cutBtn)}
+button:hover{transform:translate(-1px,-2px) rotate(-.5deg);filter:drop-shadow(4px 6px 0 rgba(40,28,15,.4))}
+button:active{transform:translate(2px,3px);filter:drop-shadow(0 0 0 transparent)}
 button:disabled{opacity:.6;cursor:wait}
-input,select{max-width:100%}
-hr{border:0;border-top:2px dashed #c8b99a;margin:18px 0}
+#create{--b:var(--terra)}#join{--b:var(--moss)}#fullscreen{--b:var(--navy)}
+#exitWaiting,#exitGame{--b:var(--cream2);color:var(--ink)}
+#winExit{--b:var(--cream);color:var(--ink)}
+
+.cut{position:relative;height:0;margin:28px 10px;border-top:2px dashed rgba(43,38,32,.45)}
+.cut span{position:absolute;top:-15px;left:12%;padding:0 8px;font-size:20px;background:var(--cream)}
 .hidden{display:none!important}
 #game{display:none}
-#fieldWrap{
-  width:100%;overflow:hidden;border:4px solid #344b38;
-  border-radius:4px;line-height:0;touch-action:none;
-  box-shadow:5px 6px 0 rgba(64,57,41,.2);
-  background:#91b96c;transform:rotate(-.15deg)
+.hint{font-size:16px;color:#6a5a48;line-height:1.45}
+
+/* marcador (modo normal) */
+#scoreboard{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px}
+.sbCard{
+  position:relative;z-index:0;min-width:120px;padding:10px 18px 8px;color:var(--cream);line-height:1.05;
+  filter:drop-shadow(2px 3px 0 rgba(40,28,15,.4));
+  display:flex;flex-direction:column;align-items:center
 }
-canvas{display:block;width:100%;height:auto;touch-action:none;cursor:crosshair}
-#scoreboard{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:900;color:#3b4d37}
-#score{font-size:28px;white-space:nowrap;background:#f0dfb8;border:2px solid #495642;border-radius:5px;padding:5px 12px;box-shadow:2px 3px 0 rgba(64,57,41,.12)}
-#code{font-size:30px;letter-spacing:5px;color:#ad642d;font-weight:900}
-#message{font-size:22px;color:#ad642d;font-weight:900;margin:12px}
-.hint{font-size:14px;color:#53614d;line-height:1.5}
-h2{color:#394d38}
-@media(max-width:500px){
-  main{padding:7px}.panel{padding:10px}
-  #score{font-size:21px;padding:4px 7px}
+.sbCard::before{content:"";position:absolute;inset:0;z-index:-1;clip-path:var(--cutBtn);background:var(--terra);background-image:var(--noise)}
+.sbCard.r::before{background:var(--navy);background-image:var(--noise)}
+.sbCard.l{transform:rotate(-1.5deg)}.sbCard.r{transform:rotate(1.5deg)}
+.sbName{font-family:"Archivo Black",Arial,sans-serif;font-size:12px;letter-spacing:.12em}
+.sbCard.me .sbName::after{content:" · TÚ";color:var(--ochre)}
+.sbCard .num{font-family:"Archivo Black",Arial,sans-serif;font-size:42px;font-weight:400}
+#score{
+  position:relative;z-index:0;font-family:"Archivo Black",Arial,sans-serif;font-size:36px;white-space:nowrap;
+  padding:6px 26px;filter:drop-shadow(2px 3px 0 rgba(40,28,15,.35))
+}
+#score::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--cream2);background-image:var(--noise);clip-path:var(--cutLbl)}
+#code{
+  display:inline-block;position:relative;z-index:0;font-family:"Archivo Black",Arial,sans-serif;font-size:54px;letter-spacing:12px;
+  color:var(--cream);padding:6px 20px 6px 32px;filter:drop-shadow(3px 4px 0 rgba(40,28,15,.35))
+}
+#code::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--terra);background-image:var(--noise);clip-path:var(--cutBtn)}
+#mySide{font-size:19px;font-weight:700;margin:14px 0 12px}
+#message{min-height:6px;margin:6px}
+
+/* campo */
+#fieldWrap{
+  position:relative;width:100%;overflow:hidden;line-height:0;touch-action:none;
+  border:9px solid var(--cream);background:#6f9b57;
+  box-shadow:4px 6px 0 rgba(40,28,15,.35)
+}
+#field{display:block;width:100%;height:auto;touch-action:none;cursor:crosshair}
+#fx{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:6}
+
+/* marcador del margen (solo pantalla completa) */
+#fsBoard{display:none}
+.tiles{display:inline-flex;flex-wrap:wrap;justify-content:center;gap:.07em;line-height:1;font-family:"Archivo Black",Arial,sans-serif;filter:drop-shadow(.05em .07em 0 rgba(30,20,10,.4))}
+.tiles .t{display:inline-block;padding:.13em .2em .1em;background:var(--bg);color:var(--fg);transform:rotate(var(--r,0deg))}
+.tiles .sp{display:inline-block;width:.3em}
+.tiles.pop .t{animation:tilePop .55s cubic-bezier(.2,1.5,.4,1) both;animation-delay:var(--d,0s)}
+@keyframes tilePop{0%{transform:translateY(-1.4em) scale(.2) rotate(-25deg);opacity:0}100%{transform:rotate(var(--r,0deg));opacity:1}}
+
+#goalBanner{
+  position:absolute;left:50%;top:36%;z-index:5;pointer-events:none;display:none;
+  font-size:clamp(46px,11vw,110px);transform:translate(-50%,-50%)
+}
+#goalBanner.show{display:block;animation:goalPop 1.7s ease both}
+@keyframes goalPop{
+  0%{transform:translate(-50%,-50%) scale(.2) rotate(-12deg);opacity:0}
+  14%{transform:translate(-50%,-50%) scale(1.18) rotate(3deg);opacity:1}
+  26%{transform:translate(-50%,-50%) scale(1) rotate(-1deg)}
+  78%{transform:translate(-50%,-50%) scale(1) rotate(-1deg);opacity:1}
+  100%{transform:translate(-50%,-62%) scale(1.08);opacity:0}
 }
 
-/* PANTALLA COMPLETA: solo se aplican estos cambios al entrar en fullscreen */
+/* pantalla de victoria */
+#winBanner{
+  position:absolute;inset:0;z-index:5;display:none;align-items:center;justify-content:center;
+  background:rgba(28,22,16,.5);line-height:1.2
+}
+#winBanner.show{display:flex;animation:fadeIn .45s ease both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+#winBanner .rays{position:absolute;left:50%;top:50%;width:min(150%,1500px);aspect-ratio:1;margin:calc(min(150%,1500px)/-2) 0 0 calc(min(150%,1500px)/-2);animation:spin 28s linear infinite;pointer-events:none}
+#winBanner .rays svg{width:100%;height:100%;display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.winCard{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;padding:10px;animation:dropIn .9s cubic-bezier(.2,1.3,.35,1) both}
+@keyframes dropIn{0%{transform:translateY(-130%) rotate(-8deg);opacity:0}60%{opacity:1}100%{transform:none}}
+.trophy{width:min(34vmin,230px);filter:drop-shadow(4px 6px 0 rgba(20,12,5,.45));animation:wiggle 1.8s ease-in-out infinite alternate;transform-origin:50% 90%}
+@keyframes wiggle{from{transform:rotate(-4deg)}to{transform:rotate(4deg)}}
+#winTitle{font-size:clamp(30px,8vw,82px)}
+#winSub{font-family:"Archivo Black",Arial,sans-serif;font-size:clamp(18px,3.6vw,34px);color:var(--cream);text-shadow:2px 3px 0 rgba(0,0,0,.5);letter-spacing:.05em}
+#winBanner.over .rays,#winBanner.over .trophy{display:none}
+#winBanner.over #winTitle{font-size:clamp(22px,5vw,52px)}
+
+@media(max-width:520px){
+  main{padding:8px 8px 36px}.panel{padding:30px 14px 22px}
+  #score{font-size:26px;padding:4px 12px}
+  .sbCard{min-width:84px;padding:8px 10px 6px}.sbCard .num{font-size:30px}
+  #code{font-size:38px;letter-spacing:6px}
+}
+
+/* ===== PANTALLA COMPLETA ===== */
 #fieldWrap:fullscreen{
   position:fixed;inset:0;
-  width:100vw;height:100vh;height:100dvh;
-  max-width:none;max-height:none;
-  margin:0;padding:0;
-  display:flex;align-items:center;justify-content:flex-start;
-  overflow:hidden;background:#e8dfc9;
-  border:none;border-radius:0;box-shadow:none;
-  transform:none;line-height:normal;
+  width:100vw;height:100vh;height:100dvh;max-width:none;max-height:none;
+  margin:0;padding:0;display:flex;align-items:center;justify-content:flex-start;
+  overflow:hidden;background:var(--kraft);background-image:var(--noise);
+  border:none;box-shadow:none;line-height:normal;
 }
 #fieldWrap:-webkit-full-screen{
   position:fixed;inset:0;
-  width:100vw;height:100vh;height:100dvh;
-  max-width:none;max-height:none;
-  margin:0;padding:0;
-  display:flex;align-items:center;justify-content:flex-start;
-  overflow:hidden;background:#e8dfc9;
-  border:none;border-radius:0;box-shadow:none;
-  transform:none;line-height:normal;
+  width:100vw;height:100vh;height:100dvh;max-width:none;max-height:none;
+  margin:0;padding:0;display:flex;align-items:center;justify-content:flex-start;
+  overflow:hidden;background:var(--kraft);background-image:var(--noise);
+  border:none;box-shadow:none;line-height:normal;
 }
-
-/* Canvas: altura completa, proporción 6:5 (600 × 500), campo entero */
-#fieldWrap:fullscreen canvas{
+#fieldWrap:fullscreen #field{
   display:block;flex:none;
-  width:min(100vw,calc(100vh * 1.2));
-  width:min(100vw,calc(100dvh * 1.2));
-  height:auto;aspect-ratio:6 / 5;
-  max-width:100vw;max-height:100vh;max-height:100dvh;
-  margin:0;border:none;border-radius:0;touch-action:none;
+  width:min(100vw,calc(100vh * 1.2));width:min(100vw,calc(100dvh * 1.2));
+  height:auto;aspect-ratio:6 / 5;max-width:100vw;max-height:100vh;max-height:100dvh;
+  margin:0;border:none;touch-action:none;
 }
-#fieldWrap:-webkit-full-screen canvas{
+#fieldWrap:-webkit-full-screen #field{
   display:block;flex:none;
-  width:min(100vw,calc(100vh * 1.2));
-  width:min(100vw,calc(100dvh * 1.2));
-  height:auto;aspect-ratio:6 / 5;
-  max-width:100vw;max-height:100vh;max-height:100dvh;
-  margin:0;border:none;border-radius:0;touch-action:none;
+  width:min(100vw,calc(100vh * 1.2));width:min(100vw,calc(100dvh * 1.2));
+  height:auto;aspect-ratio:6 / 5;max-width:100vw;max-height:100vh;max-height:100dvh;
+  margin:0;border:none;touch-action:none;
 }
+#fieldWrap:fullscreen.fullscreen-left #field{margin-left:auto;margin-right:0}
+#fieldWrap:-webkit-full-screen.fullscreen-left #field{margin-left:auto;margin-right:0}
+#fieldWrap:fullscreen.fullscreen-right #field{margin-right:auto;margin-left:0}
+#fieldWrap:-webkit-full-screen.fullscreen-right #field{margin-right:auto;margin-left:0}
 
-/* Jugador izquierdo: campo pegado a la derecha, margen a la izquierda */
-#fieldWrap:fullscreen.fullscreen-left canvas{margin-left:auto;margin-right:0}
-#fieldWrap:-webkit-full-screen.fullscreen-left canvas{margin-left:auto;margin-right:0}
+/* el marcador vive en el margen libre (izquierda si juegas a la izquierda) */
+#fieldWrap.fs #fsBoard{
+  display:flex;position:absolute;top:0;bottom:0;right:0;left:auto;
+  width:calc(100vw - min(100vw,calc(100vh * 1.2)));
+  flex-direction:column;justify-content:center;align-items:center;gap:20px;padding:18px;
+  pointer-events:none;z-index:3;line-height:1.1
+}
+#fieldWrap.fs.fullscreen-left #fsBoard{left:0;right:auto}
+#fsBoard .fsTag{
+  position:relative;z-index:0;padding:7px 16px;font-family:"Archivo Black",Arial,sans-serif;font-size:clamp(11px,1.5vh,15px);
+  letter-spacing:.08em;text-transform:uppercase;color:var(--ink);filter:drop-shadow(2px 2px 0 rgba(40,28,15,.35))
+}
+#fsBoard .fsTag::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--cream);background-image:var(--noise);clip-path:var(--cutLbl)}
+#fsBoard .sbCard{width:100%;max-width:250px;padding:clamp(10px,2vh,22px) 14px clamp(8px,1.6vh,18px)}
+#fsBoard .sbName{font-size:clamp(11px,1.6vh,16px)}
+#fsBoard .sbCard .num{font-size:clamp(46px,11vh,118px);line-height:1}
 
-/* Jugador derecho: campo pegado a la izquierda, margen a la derecha */
-#fieldWrap:fullscreen.fullscreen-right canvas{margin-right:auto;margin-left:0}
-#fieldWrap:-webkit-full-screen.fullscreen-right canvas{margin-right:auto;margin-left:0}
+@media (max-aspect-ratio:14/10){
+  #fieldWrap.fs #fsBoard,#fieldWrap.fs.fullscreen-left #fsBoard{
+    top:8px;bottom:auto;left:50%;right:auto;width:auto;height:auto;
+    transform:translateX(-50%);flex-direction:row;gap:10px;padding:0
+  }
+  #fsBoard .fsTag{display:none}
+  #fsBoard .sbCard{width:auto;min-width:78px;padding:5px 10px 4px}
+  #fsBoard .sbCard .num{font-size:28px}
+}
 </style>
 </head>
 <body>
+<div id="bg" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
 <header>
-  <h1>⚽ Fútbol online</h1>
+  <h1 id="title" class="tiles">Fútbol online</h1><br>
   <div id="status">Conectando con Firebase…</div>
 </header>
 <main>
   <section id="lobby" class="panel">
-    <h2>Crear partida</h2>
+    <h2>Crear partida</h2><br>
     <label>Goles para ganar:</label>
     <select id="target">
       <option>3</option><option selected>5</option><option>7</option><option>10</option><option>15</option>
@@ -127,9 +258,9 @@ h2{color:#394d38}
       <option value="left">Izquierda</option><option value="right">Derecha</option>
     </select><br>
     <button id="create">Crear partida</button>
-    <hr>
-    <h2>Unirse a una partida</h2>
-    <input id="codeInput" maxlength="5" placeholder="CÓDIGO" style="text-transform:uppercase;width:160px"><br>
+    <div class="cut"><span>✂</span></div>
+    <h2>Unirse a una partida</h2><br>
+    <input id="codeInput" maxlength="5" placeholder="CÓDIGO" style="text-transform:uppercase;width:170px"><br>
     <button id="join">Unirse</button>
     <p class="hint">Dos jugadores juegan. Las personas adicionales pueden mirar la partida.</p>
   </section>
@@ -145,12 +276,48 @@ h2{color:#394d38}
   <section id="game">
     <div class="panel">
       <div id="scoreboard">
-        <div>IZQUIERDA<br><span id="leftScore">0</span></div>
+        <div class="sbCard l" id="sbL"><span class="sbName">IZQUIERDA</span><span class="num" id="leftScore">0</span></div>
         <div id="score">0 - 0</div>
-        <div>DERECHA<br><span id="rightScore">0</span></div>
+        <div class="sbCard r" id="sbR"><span class="sbName">DERECHA</span><span class="num" id="rightScore">0</span></div>
       </div>
       <p id="mySide"></p>
-      <div id="fieldWrap"><canvas id="field" width="600" height="500"></canvas></div>
+      <div id="fieldWrap">
+        <canvas id="field" width="1200" height="1000"></canvas>
+
+        <div id="fsBoard">
+          <div class="fsTag" id="fsTag"></div>
+          <div class="sbCard l" id="fsL"><span class="sbName">IZQUIERDA</span><span class="num" id="fsLeft">0</span></div>
+          <div class="sbCard r" id="fsR"><span class="sbName">DERECHA</span><span class="num" id="fsRight">0</span></div>
+          <div class="fsTag" id="fsTarget"></div>
+        </div>
+
+        <div id="goalBanner" class="tiles"></div>
+
+        <div id="winBanner">
+          <div class="rays">
+            <svg viewBox="-100 -100 200 200" aria-hidden="true">
+              <g fill="#d9a441" opacity=".4" id="raysG"></g>
+            </svg>
+          </div>
+          <div class="winCard">
+            <svg class="trophy" viewBox="0 0 200 240" aria-hidden="true">
+              <path d="M46 48 C4 44 2 108 58 116" fill="none" stroke="#b8842a" stroke-width="13" stroke-linecap="butt"/>
+              <path d="M154 48 C196 44 198 108 142 116" fill="none" stroke="#b8842a" stroke-width="13" stroke-linecap="butt"/>
+              <polygon points="88,150 112,150 120,204 80,204" fill="#b8842a"/>
+              <polygon points="44,26 157,29 151,96 128,142 72,141 49,97" fill="#d9a441"/>
+              <polygon points="102,28 157,29 151,96 128,142 101,141" fill="#c0912f"/>
+              <polygon points="100,56 108,76 130,77 113,90 119,111 100,99 81,111 87,90 70,77 92,76" fill="#f6efe0"/>
+              <polygon points="58,202 143,200 147,226 54,228" fill="#c4573a"/>
+              <polygon points="70,190 132,189 134,203 68,204" fill="#2f4156"/>
+            </svg>
+            <div id="winTitle" class="tiles pop"></div>
+            <div id="winSub"></div>
+            <button id="winExit">Salir de la partida</button>
+          </div>
+        </div>
+
+        <canvas id="fx"></canvas>
+      </div>
       <div id="message"></div>
       <p id="hint" class="hint">Acerca el ratón al balón para golpearlo. También puedes hacer clic en el balón y arrastrar hacia atrás para lanzarlo.</p>
       <button id="fullscreen">Pantalla completa</button>
@@ -175,7 +342,7 @@ const firebaseConfig={
 };
 
 const db=getDatabase(initializeApp(firebaseConfig));
-const ROOT="footballRoomsV5",VERSION=5,W=1200,H=500,VW=600,R=13;
+const ROOT="footballRoomsV5",VERSION=5,W=1200,H=500,VW=600,R=13,SS=2;
 const $=id=>document.getElementById(id);
 const canvas=$("field"),ctx=canvas.getContext("2d");
 
@@ -188,6 +355,7 @@ let code=null,room=null,side=null,isHost=false,spectator=false,state=null;
 let unsubRoom=null,unsubState=null,unsubHits=null,timer=null;
 let lastHits={},dragStart=null,dragging=false,lastHover=0,hitNum=0;
 let working=false;
+let prevL=null,prevR=null,prevW=null;
 
 const roomRef=()=>ref(db,ROOT+"/"+code);
 const stateRef=()=>ref(db,ROOT+"/"+code+"/state");
@@ -197,7 +365,8 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
 function status(t,error=false){
   $("status").textContent=t;
-  $("status").style.color=error?"#b94141":"#477b57";
+  $("status").style.color=error?"#a83a2a":"#4f7a4a";
+  $("status").style.background=error?"#f2c9bd":"#f6efe0";
 }
 function makeCode(){
   let s="";
@@ -220,6 +389,145 @@ function cleanup(){
   if(unsubHits)unsubHits();
   unsubRoom=unsubState=unsubHits=null;
 }
+
+/* ===================== LETRAS RECORTADAS ===================== */
+const TILE_CUTS=[
+  "polygon(2% 8%,97% 0,100% 92%,5% 100%)",
+  "polygon(0 4%,95% 0,100% 97%,3% 100%)",
+  "polygon(4% 0,100% 6%,96% 100%,0 93%)",
+  "polygon(0 0,98% 5%,100% 100%,6% 96%)"
+];
+const PAL_TITLE=[["#f6efe0","#2b2620"],["#d9a441","#2b2620"],["#c4573a","#f6efe0"],["#7c9a76","#f6efe0"]];
+const PAL_GOAL=[["#c4573a","#f6efe0"],["#f6efe0","#2b2620"],["#d9a441","#2b2620"],["#2f4156","#f6efe0"]];
+const PAL_OVER=[["#f6efe0","#2b2620"],["#7c9a76","#f6efe0"],["#2f4156","#f6efe0"]];
+function tiles(el,text,pal,delays){
+  el.textContent="";
+  let i=0;
+  for(const ch of text){
+    if(ch===" "){const s=document.createElement("span");s.className="sp";el.appendChild(s);continue}
+    const s=document.createElement("span");
+    s.className="t";s.textContent=ch;
+    const [bg,fg]=pal[i%pal.length];
+    s.style.setProperty("--bg",bg);s.style.setProperty("--fg",fg);
+    s.style.setProperty("--r",(((i*37)%9)-4)*.9+"deg");
+    s.style.clipPath=TILE_CUTS[(i*3+1)%TILE_CUTS.length];
+    if(delays)s.style.setProperty("--d",(i*.06+.35)+"s");
+    el.appendChild(s);i++;
+  }
+}
+tiles($("title"),"Fútbol online",PAL_TITLE);
+// rayos de papel para la victoria
+(()=>{
+  let d="";
+  const n=18;
+  for(let i=0;i<n;i++){
+    const a1=i/n*Math.PI*2,a2=(i+.5)/n*Math.PI*2;
+    const L=150;
+    d+=`<polygon points="0,0 ${(Math.cos(a1)*L).toFixed(1)},${(Math.sin(a1)*L).toFixed(1)} ${(Math.cos(a2)*L).toFixed(1)},${(Math.sin(a2)*L).toFixed(1)}"/>`;
+  }
+  $("raysG").innerHTML=d;
+})();
+
+/* ===================== CONFETI DE PAPEL ===================== */
+const fx=$("fx"),fctx=fx.getContext("2d");
+let parts=[],emit=null,fxRaf=0,fxDpr=1;
+const CONF=["#c4573a","#d9a441","#7c9a76","#2f4156","#f6efe0","#e08e45","#8a4b6b"];
+function sizeFx(){
+  const r=$("fieldWrap").getBoundingClientRect();
+  fxDpr=Math.min(window.devicePixelRatio||1,2);
+  fx.width=Math.max(1,Math.round(r.width*fxDpr));
+  fx.height=Math.max(1,Math.round(r.height*fxDpr));
+}
+function spawn(x,y,angle,speed,n,spread=.9){
+  for(let i=0;i<n;i++){
+    const a=angle+(Math.random()-.5)*spread,s=speed*(.5+Math.random()*.7);
+    parts.push({
+      x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,
+      w:6+Math.random()*7,h:(Math.random()<.35?4:9)+Math.random()*8,
+      rot:Math.random()*6.28,vr:(Math.random()-.5)*.3,ph:Math.random()*6.28,
+      c:CONF[(Math.random()*CONF.length)|0],age:0,life:130+Math.random()*90
+    });
+  }
+}
+function burst(){
+  const w=fx.width/fxDpr,h=fx.height/fxDpr;
+  spawn(w*.03,h,-Math.PI/2+.4,18,55);
+  spawn(w*.97,h,-Math.PI/2-.4,18,55);
+  spawn(w*.5,h*.95,-Math.PI/2,20,40,.7);
+  startFx();
+}
+function startFx(){if(!fxRaf)fxRaf=requestAnimationFrame(fxLoop)}
+function fxLoop(){
+  fxRaf=0;
+  const w=fx.width/fxDpr,h=fx.height/fxDpr,now=performance.now();
+  fctx.setTransform(fxDpr,0,0,fxDpr,0,0);
+  fctx.clearRect(0,0,w,h);
+  if(emit&&now<emit.until){
+    for(let i=0;i<2;i++)spawn(Math.random()*w,-12,Math.PI/2,2.5,1,1.4);
+    if(now>=emit.next){
+      emit.next=now+650;
+      spawn(-5,h*.85,-Math.PI/2+.55,18,26);
+      spawn(w+5,h*.85,-Math.PI/2-.55,18,26);
+    }
+  }else emit=null;
+  for(const p of parts){
+    p.vy+=.34;p.vx*=.985;p.vy*=.985;
+    p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;p.ph+=.2;p.age++;
+    const fade=p.age>p.life-30?Math.max(0,(p.life-p.age)/30):1;
+    fctx.save();
+    fctx.globalAlpha=fade;
+    fctx.translate(p.x,p.y);fctx.rotate(p.rot);fctx.scale(1,Math.cos(p.ph));
+    fctx.fillStyle=p.c;
+    fctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+    fctx.restore();
+  }
+  parts=parts.filter(p=>p.age<p.life&&p.y<h+40);
+  if(parts.length||emit)fxRaf=requestAnimationFrame(fxLoop);
+  else fctx.clearRect(0,0,w,h);
+}
+function stopFx(){parts=[];emit=null}
+
+/* ===================== CELEBRACIONES ===================== */
+let goalTimer=null;
+function showGoal(){
+  const g=$("goalBanner");
+  tiles(g,"¡GOL!",PAL_GOAL);
+  g.classList.remove("show");void g.offsetWidth;g.classList.add("show");
+  clearTimeout(goalTimer);
+  goalTimer=setTimeout(()=>g.classList.remove("show"),1750);
+}
+function showEnd(first){
+  const w=state.winner;
+  const l=Number(state.score?.left)||0,r=Number(state.score?.right)||0;
+  const banner=$("winBanner");
+  const won=!spectator&&w===side;
+  banner.className="show "+(won?"won":"over");
+  const t=$("winTitle");
+  t.classList.remove("pop");void t.offsetWidth;t.classList.add("pop");
+  if(won){
+    tiles(t,"¡VICTORIA!",PAL_TITLE,true);
+    $("winSub").textContent=l+" – "+r;
+    if(!first){emit={until:performance.now()+6500,next:0};startFx()}
+  }else if(spectator){
+    tiles(t,"FIN DE LA PARTIDA",PAL_OVER,true);
+    $("winSub").textContent=`Ganó ${w==="left"?"la izquierda":"la derecha"} · ${l} – ${r}`;
+    if(!first){burst()}
+  }else{
+    tiles(t,"HA GANADO EL OTRO",PAL_OVER,true);
+    $("winSub").textContent=l+" – "+r;
+  }
+}
+function celebrate(l,r,w){
+  const first=prevL===null;
+  if(!first){
+    const mine=spectator?(l>prevL||r>prevR):(side==="left"?l>prevL:r>prevR);
+    const goalNow=mine&&!w;
+    if(goalNow){showGoal();burst()}
+  }
+  if(w&&!prevW)showEnd(first);
+  prevL=l;prevR=r;prevW=w||null;
+}
+
 function updateScreen(){
   if(!room)return;
   const ready=!!room.players?.left&&!!room.players?.right;
@@ -234,6 +542,12 @@ function updateScreen(){
   $("hint").textContent=spectator
     ?"Estás mirando como espectador. Los dos jugadores controlan el balón."
     :"Acerca el ratón al balón para golpearlo. O haz clic en él y arrastra hacia atrás. Funciona también con pantalla táctil.";
+  for(const id of ["sbL","sbR","fsL","fsR"]){
+    const mine=!spectator&&((id.endsWith("L")&&side==="left")||(id.endsWith("R")&&side==="right"));
+    $(id).classList.toggle("me",mine);
+  }
+  $("fsTag").textContent=spectator?"Espectador":`Tu mitad: ${side==="left"?"izquierda":"derecha"}`;
+  $("fsTarget").textContent=`Primero a ${Number(room.target)||5} goles`;
   if(room.status!=="started"&&room.status!=="finished"&&isHost){
     update(roomRef(),{status:"started"}).catch(e=>status("Error al iniciar: "+e.message,true));
   }
@@ -299,6 +613,7 @@ async function joinGame(){
 }
 function listenRoom(){
   cleanup();
+  prevL=prevR=null;prevW=null;
   unsubRoom=onValue(roomRef(),snap=>{
     if(!snap.exists()){
       status("La sala ya no existe.",true);cleanup();return;
@@ -335,10 +650,10 @@ function updateScore(){
   if(!state)return;
   const l=Number(state.score?.left)||0,r=Number(state.score?.right)||0;
   $("leftScore").textContent=l;$("rightScore").textContent=r;
+  $("fsLeft").textContent=l;$("fsRight").textContent=r;
   $("score").textContent=l+" - "+r;
-  if(state.winner){
-    $("message").textContent=state.winner===side?"¡HAS GANADO! 🏆":spectator?"Partida terminada":"¡HA GANADO EL OTRO JUGADOR!";
-  }else $("message").textContent="";
+  $("message").textContent="";
+  if(side||spectator)celebrate(l,r,state.winner);
 }
 function resetBall(){state.ball={x:W/2,y:H/2,vx:0,vy:0}}
 function startPhysics(){
@@ -364,86 +679,212 @@ function startPhysics(){
   },33);
 }
 
+/* ===================== DIBUJO: PAPEL RECORTADO ===================== */
+function rng(seed){
+  return()=>{
+    seed|=0;seed=seed+0x6D2B79F5|0;
+    let t=Math.imul(seed^seed>>>15,1|seed);
+    t=t+Math.imul(t^t>>>7,61|t)^t;
+    return((t^t>>>14)>>>0)/4294967296;
+  };
+}
+const jit=(r,a)=>(r()-.5)*2*a;
+
+// pieza recortada con tijera: tramos rectos con pequeñas desviaciones + sombra dura
+function cutPoly(c,r,pts,fill,a,shadow=true){
+  c.save();
+  if(shadow){c.shadowColor="rgba(20,35,15,.4)";c.shadowOffsetX=2;c.shadowOffsetY=3;c.shadowBlur=0}
+  c.fillStyle=fill;c.beginPath();
+  const n=pts.length;let first=true;
+  for(let i=0;i<n;i++){
+    const [x1,y1]=pts[i],[x2,y2]=pts[(i+1)%n];
+    const k=Math.max(1,Math.round(Math.hypot(x2-x1,y2-y1)/120));
+    for(let s=0;s<k;s++){
+      const t=s/k,x=x1+(x2-x1)*t+jit(r,a),y=y1+(y2-y1)*t+jit(r,a);
+      if(first){c.moveTo(x,y);first=false}else c.lineTo(x,y);
+    }
+  }
+  c.closePath();c.fill();c.restore();
+}
+const rectPts=(x,y,w,h)=>[[x,y],[x+w,y],[x+w,y+h],[x,y+h]];
+function discPts(cx,cy,rad,n){
+  const p=[];
+  for(let i=0;i<n;i++){const a=i/n*Math.PI*2;p.push([cx+Math.cos(a)*rad,cy+Math.sin(a)*rad])}
+  return p;
+}
+// trazos de cera para las líneas
+function seg(c,r,x1,y1,x2,y2,a){
+  const n=Math.max(2,Math.ceil(Math.hypot(x2-x1,y2-y1)/45));
+  c.moveTo(x1+jit(r,a),y1+jit(r,a));
+  for(let i=1;i<=n;i++){
+    const t=i/n;
+    c.lineTo(x1+(x2-x1)*t+jit(r,a),y1+(y2-y1)*t+jit(r,a));
+  }
+}
+function box(c,r,x,y,w,h,a){
+  seg(c,r,x,y,x+w,y,a);seg(c,r,x+w,y,x+w,y+h,a);
+  seg(c,r,x+w,y+h,x,y+h,a);seg(c,r,x,y+h,x,y,a);
+}
+function ell(c,r,cx,cy,rx,ry,a){
+  const n=48,off=r()*6;
+  for(let i=0;i<=n+2;i++){
+    const t=off+i/n*Math.PI*2;
+    const x=cx+Math.cos(t)*(rx+jit(r,a)),y=cy+Math.sin(t)*(ry+jit(r,a));
+    if(i)c.lineTo(x,y);else c.moveTo(x,y);
+  }
+}
+function ink(c,color,w,seed,fn){
+  c.lineCap="round";c.lineJoin="round";c.strokeStyle=color;
+  [[w,.95,seed],[w*.45,.7,seed+77]].forEach(([lw,al,s])=>{
+    c.lineWidth=lw;c.globalAlpha=al;c.beginPath();fn(rng(s));c.stroke();
+  });
+  c.globalAlpha=1;
+}
+function goal(c,r,x,d){
+  const gx=Math.min(x,x+d*34);
+  // red
+  c.save();
+  c.beginPath();c.rect(gx,180,34,140);c.clip();
+  c.fillStyle="rgba(246,239,224,.88)";c.fillRect(gx,180,34,140);
+  c.strokeStyle="rgba(43,38,32,.45)";c.lineWidth=1.2;c.beginPath();
+  for(let k=-140;k<=60;k+=10){
+    c.moveTo(gx+k,180);c.lineTo(gx+k+140,320);
+    c.moveTo(gx+k+140,180);c.lineTo(gx+k,320);
+  }
+  c.stroke();c.restore();
+  // marco de cartón kraft
+  const kraft="#b8884f";
+  cutPoly(c,r,rectPts(gx,172,34,9),kraft,.8);
+  cutPoly(c,r,rectPts(gx,319,34,9),kraft,.8);
+  const bx=d>0?gx+26:gx;
+  cutPoly(c,r,rectPts(bx,172,8,156),kraft,.8);
+}
+function flag(c,r,cx,cy,dx,dy){
+  c.strokeStyle="#2b2620";c.lineWidth=2;c.beginPath();c.moveTo(cx,cy);c.lineTo(cx+dx*2,cy+dy*30);c.stroke();
+  cutPoly(c,r,[[cx+dx*2,cy+dy*30],[cx+dx*2+dx*24,cy+dy*21],[cx+dx*2,cy+dy*10]],"#c4573a",.6);
+}
+
+let fieldLayer=null;
+function buildField(){
+  fieldLayer=document.createElement("canvas");
+  fieldLayer.width=W*SS;fieldLayer.height=H*SS;
+  const c=fieldLayer.getContext("2d");
+  c.scale(SS,SS);
+  const r=rng(2024);
+
+  c.fillStyle="#557f48";c.fillRect(0,0,W,H);
+
+  // franjas de papel verde superpuestas (de derecha a izquierda, cada una proyecta sombra)
+  for(let i=11;i>=0;i--){
+    cutPoly(c,r,rectPts(i*100-6,-8,114,H+16),i%2?"#6f9b57":"#7aa65f",2.4);
+  }
+
+  // grano del papel y fibras
+  c.lineWidth=1;
+  for(let i=0;i<2600;i++){
+    const x=r()*W,y=r()*H,a=r()*Math.PI,l=4+r()*14;
+    c.strokeStyle=r()>.5?`rgba(255,250,215,${.06+r()*.12})`:`rgba(35,70,35,${.05+r()*.1})`;
+    c.beginPath();c.moveTo(x,y);c.lineTo(x+Math.cos(a)*l,y+Math.sin(a)*l);c.stroke();
+  }
+  // sombreado a lápiz
+  c.lineWidth=1.4;
+  for(let i=0;i<900;i++){
+    const x=r()*W,y=r()*H;
+    c.strokeStyle=r()>.5?"rgba(255,255,225,.11)":"rgba(30,70,30,.12)";
+    c.beginPath();c.moveTo(x,y);c.lineTo(x+16+r()*10,y-9-r()*6);c.stroke();
+  }
+
+  // piezas de papel encima: círculo central y áreas
+  cutPoly(c,r,discPts(W/2,H/2,88,17),"#86b06a",2);
+  cutPoly(c,r,rectPts(-12,145,137,210),"#82ad67",1.8);
+  cutPoly(c,r,rectPts(W-125,145,137,210),"#82ad67",1.8);
+  cutPoly(c,r,rectPts(-12,195,64,110),"#8db872",1.4);
+  cutPoly(c,r,rectPts(W-52,195,64,110),"#8db872",1.4);
+
+  // líneas a cera
+  const lines=(rr)=>{
+    box(c,rr,14,14,W-28,H-28,2.2);
+    seg(c,rr,W/2,14,W/2-1,H-14,2);
+    ell(c,rr,W/2,H/2,82,80,2);
+    box(c,rr,-10,145,135,210,2);box(c,rr,W-125,145,135,210,2);
+    box(c,rr,-10,195,62,110,1.6);box(c,rr,W-52,195,62,110,1.6);
+  };
+  c.save();c.translate(2,2.8);
+  ink(c,"rgba(25,50,25,.38)",5,11,lines);
+  c.restore();
+  ink(c,"#f6efe0",5,11,lines);
+  c.fillStyle="#f6efe0";
+  [[W/2,H/2,6],[95,250,4.5],[W-95,250,4.5]].forEach(([x,y,rad])=>{
+    c.beginPath();c.arc(x,y,rad,0,Math.PI*2);c.fill();
+  });
+
+  goal(c,r,0,1);goal(c,r,W,-1);
+
+  flag(c,r,16,16,1,1);flag(c,r,W-16,16,-1,1);
+  flag(c,r,16,H-16,1,-1);flag(c,r,W-16,H-16,-1,-1);
+
+  const g=c.createRadialGradient(W/2,H/2,H*.35,W/2,H/2,W*.62);
+  g.addColorStop(0,"rgba(40,30,15,0)");g.addColorStop(1,"rgba(40,30,15,.16)");
+  c.fillStyle=g;c.fillRect(0,0,W,H);
+}
+buildField();
+
+function drawPent(cx,cy,radius,rotation){
+  ctx.beginPath();
+  for(let i=0;i<5;i++){
+    const angle=rotation+i*Math.PI*2/5;
+    const px=cx+Math.cos(angle)*radius,py=cy+Math.sin(angle)*radius;
+    if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);
+  }
+  ctx.closePath();ctx.fillStyle="#2b2620";ctx.fill();
+}
+
 function draw(){
   if(!state||!side&&!spectator)return;
   const offset=side==="right"?VW:0;
+  ctx.setTransform(SS,0,0,SS,0,0);
   ctx.clearRect(0,0,VW,H);
   ctx.save();
   ctx.beginPath();ctx.rect(0,0,VW,H);ctx.clip();ctx.translate(-offset,0);
 
-  ctx.fillStyle="#8fbd70";ctx.fillRect(0,0,W,H);
-  for(let x=0;x<W;x+=80){
-    ctx.fillStyle=(x/80)%2?"rgba(45,91,48,.075)":"rgba(255,246,194,.10)";
-    ctx.fillRect(x,0,80,H);
-  }
-  for(let i=0;i<115;i++){
-    const x=(i*137+31)%W,y=(i*83+17)%H;
-    ctx.strokeStyle=i%2?"rgba(40,83,46,.15)":"rgba(255,250,213,.22)";
-    ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(x,y);
-    ctx.lineTo(x+5+(i%7),y+(i%3)-1);ctx.stroke();
-  }
+  ctx.drawImage(fieldLayer,0,0,W,H);
 
-  ctx.lineCap="round";ctx.lineJoin="round";
-  ctx.strokeStyle="#f8f0d9";ctx.lineWidth=5;
-  ctx.beginPath();
-  ctx.moveTo(5,7);ctx.lineTo(W-6,5);ctx.lineTo(W-4,H-7);
-  ctx.lineTo(6,H-5);ctx.closePath();ctx.stroke();
-
-  ctx.strokeStyle="rgba(47,83,47,.38)";ctx.lineWidth=1.5;
-  ctx.beginPath();
-  ctx.moveTo(9,12);ctx.lineTo(W-10,10);ctx.lineTo(W-9,H-12);
-  ctx.lineTo(10,H-10);ctx.closePath();ctx.stroke();
-
-  ctx.strokeStyle="#f8f0d9";ctx.lineWidth=4;
-  ctx.beginPath();ctx.moveTo(W/2,8);ctx.lineTo(W/2-1,H-8);ctx.stroke();
-  ctx.beginPath();ctx.ellipse(W/2,H/2,81,79,-.03,0,Math.PI*2);ctx.stroke();
-  ctx.beginPath();ctx.ellipse(W/2,H/2,7,6,0,0,Math.PI*2);
-  ctx.fillStyle="#f8f0d9";ctx.fill();
-
-  ctx.strokeRect(0,145,125,210);ctx.strokeRect(W-125,145,125,210);
-  ctx.strokeRect(0,195,52,110);ctx.strokeRect(W-52,195,52,110);
-  ctx.fillStyle="#f0e5c9";ctx.fillRect(-8,180,12,140);ctx.fillRect(W-4,180,12,140);
-
-  ctx.strokeStyle="#49634a";ctx.lineWidth=2;
-  for(let y=190;y<320;y+=14){
-    ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(9,y+3);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(W-9,y+3);ctx.lineTo(W,y);ctx.stroke();
-  }
-
-  // Balón cartoon con paneles negros
   const b=state.ball,ballR=15;
-  ctx.fillStyle="rgba(38,54,34,.25)";
-  ctx.beginPath();ctx.ellipse(b.x+2,b.y+4,ballR*1.05,ballR*.78,0,0,Math.PI*2);ctx.fill();
-
-  ctx.beginPath();ctx.arc(b.x,b.y,ballR,0,Math.PI*2);
-  ctx.fillStyle="#fffdf5";ctx.fill();
-  ctx.strokeStyle="#252b26";ctx.lineWidth=1.8;ctx.stroke();
-
-  function drawBallPentagon(cx,cy,radius,rotation){
-    ctx.beginPath();
-    for(let i=0;i<5;i++){
-      const angle=rotation+i*Math.PI*2/5;
-      const px=cx+Math.cos(angle)*radius,py=cy+Math.sin(angle)*radius;
-      if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);
+  const speed=Math.hypot(b.vx||0,b.vy||0);
+  if(speed>3){
+    for(let k=1;k<=4;k++){
+      ctx.globalAlpha=.14-k*.025;
+      ctx.fillStyle="#f6efe0";
+      ctx.beginPath();ctx.arc(b.x-b.vx*k*1.4,b.y-b.vy*k*1.4,ballR*(1-k*.08),0,Math.PI*2);ctx.fill();
     }
-    ctx.closePath();ctx.fillStyle="#252b26";ctx.fill();
-    ctx.strokeStyle="#252b26";ctx.lineWidth=.8;ctx.stroke();
+    ctx.globalAlpha=1;
   }
-
-  drawBallPentagon(b.x,b.y,4.3,-Math.PI/2);
+  // sombra dura de papel
+  ctx.fillStyle="rgba(20,35,15,.42)";
+  ctx.beginPath();ctx.arc(b.x+3,b.y+4.5,ballR,0,Math.PI*2);ctx.fill();
+  // disco de papel
+  ctx.beginPath();ctx.arc(b.x,b.y,ballR,0,Math.PI*2);
+  ctx.fillStyle="#f8f3e6";ctx.fill();
+  ctx.strokeStyle="rgba(43,38,32,.5)";ctx.lineWidth=1.4;ctx.stroke();
+  // piezas negras recortadas que ruedan
+  const spin=b.x*.06+b.y*.03;
+  drawPent(b.x,b.y,4.4,spin-Math.PI/2);
   for(let i=0;i<5;i++){
-    const angle=-Math.PI/2+i*Math.PI*2/5;
-    drawBallPentagon(b.x+Math.cos(angle)*9.1,b.y+Math.sin(angle)*9.1,3.1,angle);
+    const angle=spin-Math.PI/2+i*Math.PI*2/5;
+    drawPent(b.x+Math.cos(angle)*9.6,b.y+Math.sin(angle)*9.6,3,angle);
   }
-
-  ctx.beginPath();ctx.arc(b.x-5,b.y-5,2.2,0,Math.PI*2);
-  ctx.fillStyle="rgba(255,255,255,.9)";ctx.fill();
   ctx.restore();
 
-  ctx.fillStyle="#fff8e8";ctx.strokeStyle="#354b36";ctx.lineWidth=3;
-  ctx.font="900 14px Trebuchet MS,Arial";
-  const label=spectator?"👀 ESPECTADOR":"⚽ TU MITAD";
-  ctx.strokeText(label,12,23);ctx.fillText(label,12,23);
+  // etiqueta de papel
+  const label=spectator?"ESPECTADOR":"TU MITAD";
+  ctx.save();
+  ctx.translate(12,10);ctx.rotate(-.03);
+  ctx.font='700 12px Karla,Arial,sans-serif';
+  const tw=ctx.measureText(label).width+22;
+  ctx.fillStyle="rgba(20,35,15,.4)";ctx.fillRect(2,3,tw,22);
+  ctx.fillStyle="#f6efe0";ctx.fillRect(0,0,tw,22);
+  ctx.fillStyle="#2b2620";ctx.textBaseline="middle";ctx.fillText(label,11,12);
+  ctx.restore();
 }
 
 function toWorld(e){
@@ -495,6 +936,7 @@ canvas.addEventListener("pointercancel",()=>{dragging=false;dragStart=null});
 
 async function leave(){
   cleanup();
+  try{if(document.fullscreenElement)await document.exitFullscreen()}catch(e){}
   try{
     if(code&&room){
       const snap=await get(roomRef());
@@ -508,6 +950,8 @@ async function leave(){
     }
   }catch(e){console.warn(e)}
   code=null;room=null;side=null;state=null;isHost=false;spectator=false;lastHits={};
+  prevL=prevR=null;prevW=null;
+  $("winBanner").className="";$("goalBanner").classList.remove("show");stopFx();
   show("lobby");status("Has salido de la partida.");
 }
 
@@ -519,6 +963,7 @@ $("codeInput").addEventListener("input",()=>{
 $("codeInput").addEventListener("keydown",e=>{if(e.key==="Enter")joinGame()});
 $("exitWaiting").onclick=leave;
 $("exitGame").onclick=leave;
+$("winExit").onclick=leave;
 
 $("fullscreen").onclick=async()=>{
   try{
@@ -537,12 +982,16 @@ $("fullscreen").onclick=async()=>{
   }
 };
 
-// Limpiar las clases al salir: el modo normal no cambia.
 document.addEventListener("fullscreenchange",()=>{
-  if(!document.fullscreenElement){
-    $("fieldWrap").classList.remove("fullscreen-left","fullscreen-right");
-  }
+  const fw=$("fieldWrap");
+  const on=document.fullscreenElement===fw;
+  fw.classList.toggle("fs",on);
+  if(!on)fw.classList.remove("fullscreen-left","fullscreen-right");
+  setTimeout(sizeFx,60);
 });
+sizeFx();
+window.addEventListener("resize",sizeFx);
+if(window.ResizeObserver)new ResizeObserver(sizeFx).observe($("fieldWrap"));
 
 onValue(ref(db,".info/connected"),s=>{
   if(s.val())status("Conectado con Firebase.");
