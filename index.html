@@ -994,8 +994,8 @@ window.addEventListener("resize",sizeFx);
 if(window.ResizeObserver)new ResizeObserver(sizeFx).observe($("fieldWrap"));
 
 onValue(ref(db,".info/connected"),s=>{
-  if(s.val())status("Conectado con Firebase.");
-  else status("Conectando con Firebase…");
+  if(s.val())status("Conectado al servidor.");
+  else status("Conectando…");
 });
 </script>
 </body>
